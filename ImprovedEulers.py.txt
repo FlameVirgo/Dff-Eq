@@ -3,7 +3,7 @@ import time
 
 """
 Name: Sachin Letchumanan
-Date: 03/07/2024
+Date: 03/12/2024
 Description: Simulate Improved Euler's (Heun's) Method
 """
 
@@ -13,8 +13,8 @@ def ImpEulers(diffEq, x0, y0, step, xf):
     iterations = int((xf - x0) / step)
     start_time = time.time()                                                                  # Start measuring time
     for i in range(iterations):
-        m = diffEq.subs({x: x0, y: y0}).evalf()                                               # use differential equation to find slope at x0 , y0
-        y0 += step * diffEq.subs({x: x0 + (step / 2) , y: y0 + (step / 2) * m }).evalf()      # approx the next y using 
+        m = diffEq.subs({x: x0, y: y0})                                                       # use differential equation to find slope at x0 , y0
+        y0 += (step/2) * (m + diffEq.subs({x: x0 + (step) , y: y0 + m*step } ) ).evalf()      # approx the next y using 
         x0 += step
     end_time = time.time()                                                                    # End measuring time
     return y0, end_time - start_time                                                          # Return result and time taken
@@ -22,11 +22,11 @@ def ImpEulers(diffEq, x0, y0, step, xf):
 #Test Case
 x = Symbol("x")
 y = Symbol("y")
-diffEq = 2*x + y
-x0 = 0
+diffEq = 2 * x * y
+x0 = 1
 y0 = 1
-step = 0.01
-xf = 5
+step = 0.1
+xf = 1.5
 result, time_taken = ImpEulers(diffEq, x0, y0, step, xf)
 print("Result:", result)
 print("Time taken:", time_taken, "seconds")
