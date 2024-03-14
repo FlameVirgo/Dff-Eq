@@ -1,0 +1,43 @@
+from sympy import *
+import time
+import math
+
+"""
+Name: Sachin Letchumanan
+Date: 03/14/2024
+Description: Simulate Improved Euler's (Heun's) Method with an Error Analysis & Time
+"""
+
+print("{:<10} {:<10} {:<15} {:<10}".format("x", "y", "Real Value", "Absolute Error"))         # Headers
+def ImpEulers(diffEq, x0, y0, step, xf, solToDiffEq):
+    x = Symbol("x")
+    y = Symbol("y")
+    iterations = int((xf - x0) / step)
+    start_time = time.time()                                                                  # Start measuring time
+    for i in range(iterations + 1):
+        print("{:<10}".format(round(x0, 4)), end = " ")                                       # indent
+        print("{:<10}".format(round(y0, 4)), end = " ")                                       # indent
+        m = diffEq.subs({x: x0, y: y0})                                                       # use differential equation to find slope at x0 , y0
+        y_actual = solToDiffEq.subs({x: x0})
+        absError = abs(y_actual - y0)
+        y0 += (step/2) * (m + diffEq.subs({x: x0 + (step) , y: y0 + m*step } ) )              # approx the next y using 
+        print("{:<15}".format(round(float(y_actual), 4)) , end = " ")
+        print(round(absError, 4), end = " ")                                                  #indent 
+        print()
+        x0 += step
+    end_time = time.time()                                                                    # End measuring time
+    return y0, end_time - start_time                                                          # Return result and time taken
+
+# Test Case
+
+x = Symbol("x")
+y = Symbol("y")
+diffEq = 2 * x * y
+solToDiffEq = (math.e)**(x**2 - 1)
+x0 = 1.0
+y0 = 1.0
+step = 0.05
+xf = 1.5
+result, time_taken = ImpEulers(diffEq, x0, y0, step, xf, solToDiffEq)
+print()
+print("Time taken:", time_taken, "seconds")
