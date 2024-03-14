@@ -1,0 +1,40 @@
+from sympy import *
+import math
+
+"""
+Name: Sachin Letchumanan
+Date: 03/14/2024
+Description: Euler's Method with an Error Analysis
+"""
+
+print("{:<10} {:<10} {:<15} {:<10}".format("x", "y", "Real Value", "Absolute Error"))                # Header
+def EulersWithErrorAnalysis(diffEq, x0, y0, step, xf, solToDiffEq):
+    x = Symbol("x") 
+    y = Symbol("y")
+    iterations = int((xf - x0) / step)                                                               # How long it will take to get from x0 to xf given a step size 
+    for i in range(iterations + 1):                                                                  # the +1 ensures it goes until the very last iteration
+        print("{:<10}".format(round(x0, 4)), end = " ")                                              # indent
+        print("{:<10}".format(round(y0, 4)), end = " ")
+        m = diffEq.subs({x: x0, y: y0})                                                              # indent
+        y_actual = solToDiffEq.subs({x: x0})                                                         # real value of the function at x0  
+        absError = abs(y_actual - y0)                                                                # error between real value and improved euler's approximated value
+        y0 = m * step + y0
+        print("{:<15}".format(round(float(y_actual), 4)) , end = " ")                                # indent
+        print(round(absError, 4), end = " ")                     
+        print() 
+        x0 += step                                                                                   # updates x for the next iteration
+    return y0
+
+# Test Case
+
+x = Symbol("x")
+y = Symbol("y")
+diffEq = 2*x*y                        
+solToDiffEq = (math.e)**(x**2 - 1)
+x0 = 1.0
+y0 = 1.0
+step = 0.05
+xf = 1.5
+
+
+result = EulersWithErrorAnalysis(diffEq, x0, y0, step, xf, solToDiffEq)
