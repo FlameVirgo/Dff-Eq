@@ -1,0 +1,70 @@
+from sympy import *
+import time
+
+"""
+Name: Sachin Letchumanan
+Date: 04/01/2024
+Description: Adams-Bashforth Method
+"""
+def RK4(diffEq, x0, y0, step, xf):
+    x = Symbol("x")
+    y = Symbol("y")
+    iterations = int((xf - x0) / step)                                     # indicates how many attempts it will take to get from x0 to xf with a given step size
+    start_time = time.time()
+    InitialConditions = [y0]
+    for i in range(3):
+        k1 = diffEq.subs({x: x0, y: y0})                                   # k1
+        k2 = diffEq.subs({x: x0 + (step / 2) , y: y0 + step * (k1 / 2)})   # k2 
+        k3 = diffEq.subs({x: x0 + (step / 2) , y: y0 + step * (k2 / 2)})   # k3 
+        k4 = diffEq.subs({x: x0 + step, y: y0 + step * (k3)})              # k4
+        y0 += (step/6) * (k1 + 2*k2 + 2*k3 + k4)                           # update y0 
+        InitialConditions.append(y0)
+        x0 += step                                                         # increment x0 by step to go to next iteration
+    return InitialConditions
+
+
+def ABM(diffEQ,x0,y0,step, xf):
+    InitialCondition = RK4(diffEq, x0, y0, step, xf)                       # Conditions from RK4
+    y1 = InitialCondition[1]
+    y2 = InitialCondition[2]
+    y3 = InitialCondition[3]
+    itr = round( ( xf - (x0 + 3*step) ) /step )                            # Number of extra iterations needed in ABM
+    x1 = x0 + step
+    x2 = x1 + step
+    x3 = x2 + step
+    for i in range (itr):
+        f0 = diffEQ.subs({x:x0,y:y0})                                      #slopes
+        f1 = diffEQ.subs({x:x0 + step,y:y1})
+        f2 = diffEQ.subs({x:x0 + 2 * step,y:y2})
+        f3 = diffEQ.subs({x:x0 + 3 * step,y:y3})
+        yPredicted = y3 + (step / 24) * (55*f3-59*f2+37*f1-9*f0)          # Predicted value
+        f4 = diffEQ.subs({x:x0 + 4 * step,y:yPredicted})
+        yPrev = yPredicted
+        yCurr = y3 + (step/24) * (9*f4+19*f3-5*f2+f1)                     # Corrector
+        while(yPrev.round(6)!=yCurr.round(6)):
+            yPrev=yCurr
+            f4=diffEQ.subs({x:x0 + 4 * step,y:yCurr})
+            yCurr=y3+(step/24)*(9*f4+19*f3-5*f2+f1)
+        y0 = y1                                                           # Update values for next iteration
+        y1 = y2
+        y2 = y3
+        y3 = yCurr
+        x0 = x1
+        x1 = x2
+        x2 = x3
+        x3 += step
+    return yCurr
+
+
+
+# Test Case
+x = Symbol("x")
+y = Symbol("y")
+diffEq = x - y**2
+x0 = 0
+y0 = 1
+step = 0.2
+xf = 1
+print(ABM(diffEq, x0, y0, step, xf))
+
+
