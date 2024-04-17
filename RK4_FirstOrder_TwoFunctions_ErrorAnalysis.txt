@@ -1,0 +1,83 @@
+# Runge-Kutta 4th Order (RK4) Method for Solving a System of First-Order Ordinary Differential Equations
+# Author: Sachin Letchumanan
+# Date: 04/12/2024
+
+# Importing required libraries
+from sympy import *
+
+# Define the RK4 method for a system of first-order ODEs
+def RK4_FirstOrder_TwoFunctions(u, v, t0, x0, y0, h, tf):
+    # Define symbols
+    x = Symbol("x")
+    y = Symbol("y")
+    t = Symbol("t")
+
+    # Initialize list with initial values
+    List = [x0, y0]
+
+    # Calculate number of iterations
+    iterations = round((tf - t0) / h)
+
+    # Main loop for RK4 method
+    while t0 < tf:
+        x_c, y_c = List[0], List[1]
+
+        # Calculate intermediate values for RK4 method
+        m1 = u.subs({t: t0, x: x_c, y: y_c})
+        k1 = v.subs({t: t0, x: x_c, y: y_c})
+        m2 = u.subs({t: t0 + (h / 2), x: x_c + (h * m1 / 2), y: y_c + (h * k1 / 2)})
+        k2 = v.subs({t: t0 + (h / 2), x: x_c + (h * m1 / 2), y: y_c + (h * k1 / 2)})
+        m3 = u.subs({t: t0 + (h / 2), x: x_c + (h * m2) / 2, y: y_c + (h * k2 / 2)})
+        k3 = v.subs({t: t0 + (h / 2), x: x_c + (h * m2) / 2, y: y_c + (h * k2 / 2)})
+        m4 = u.subs({t: t0 + h, x: x_c + h * m3, y: y_c + h * k3})
+        k4 = v.subs({t: t0 + h, x: x_c + h * m3, y: y_c + h * k3})
+
+        # Calculate new values using RK4 method
+        x_new = x_c + (h / 6) * (m1 + 2 * m2 + 2 * m3 + m4)
+        y_new = y_c + (h / 6) * (k1 + 2 * k2 + 2 * k3 + k4)
+
+        # Error Analysis
+        x_exact_value = x_exact(t0).evalf()
+        y_exact_value = y_exact(t0).evalf()
+        x_abs_error = abs(x_exact_value - x_new)
+        y_abs_error = abs(y_exact_value - y_new)
+
+        # Print values in a table format
+        print("{:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10}".format(
+            f"t = {t0:.6f}", f"x = {x_new.evalf():.6f}", f"y = {y_new.evalf():.6f}", 
+            f"x_exact = {x_exact_value:.6f}", f"x_abs_error = {x_abs_error:.6f}", 
+            f"y_exact = {y_exact_value:.6f}", f"y_abs_error = {y_abs_error:.6f}"))
+
+        # Update list with new values
+        List[0] = x_new
+        List[1] = y_new
+        t0 += h
+
+    # Return final approximated values
+    return List[0], List[1]
+
+# Define symbols and functions
+x = Symbol("x")
+y = Symbol("y")
+t = Symbol("t")
+u = 2 * x + 4 * y      # u is x'(t)
+v = -1 * x + 6 * y     # v is y'(t)
+
+# Exact solutions
+def x_exact(t):
+    return (26 * t - 1) * exp(4 * t)
+
+def y_exact(t):
+    return (13 * t + 6) * exp(4 * t)
+
+# Initial conditions
+t0 = 0
+x0 = -1
+y0 = 6
+
+# Step size and final time
+h = 0.1
+tf = 0.6
+
+# Compute and print result
+result = RK4_FirstOrder_TwoFunctions(u, v, t0, x0, y0, h, tf)

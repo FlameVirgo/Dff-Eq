@@ -1,12 +1,31 @@
 from sympy import *
 
 """
-Name: Sachin Letchumanan
+Author: Sachin Letchumanan
 Date: 03/07/2024
-Description: Simulate Euler's Method
+Description: Implementation of Euler's Method for numerical approximation of a first-order ordinary differential equation.
 """
 
 def Eulers(diffEq, x0, y0, step, xf):
+    """
+    Function to approximate the solution of a first-order ordinary differential equation using Euler's Method.
+
+    Parameters:
+    diffEq : sympy expression
+        The first-order ordinary differential equation in terms of 'x' and 'y'.
+    x0 : float
+        Initial value of 'x'.
+    y0 : float
+        Initial value of 'y' corresponding to 'x0'.
+    step : float
+        Step size for the iteration.
+    xf : float
+        Final value of 'x' where the solution is approximated.
+
+    Returns:
+    float
+        Approximated value of 'y' corresponding to 'xf'.
+    """
     x = Symbol("x")
     y = Symbol("y")
     iterations = int((xf - x0) / step)

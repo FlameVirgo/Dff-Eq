@@ -1,0 +1,57 @@
+from sympy import *
+
+"""
+Name: Sachin Letchumanan
+Date: 04/12/2024
+Description: Runge-Kutta Method (RK4) for solving a Second Order Differential Equation
+"""
+
+def EulersSecondOrder(SecondOrderDiffEq, x0, y0, u0, h, xf):
+    """
+    Approximates the solution to a second-order ordinary differential equation (ODE) using the Euler method.
+
+    Parameters:
+    SecondOrderDiffEq (SymPy expression): The second-order ODE in terms of symbols x, y, and u (y').
+    x0 (float): Initial value of x.
+    y0 (float): Initial value of y.
+    u0 (float): Initial value of the first derivative of y.
+    h (float): Step size.
+    xf (float): Final value of x for which the solution is computed.
+
+    Returns:
+    Tuple: Approximated values of y and its first derivative u at the final value of x.
+    """
+    x = Symbol("x")
+    y = Symbol("y")
+    u = Symbol("u")
+    iterations = round((xf - x0) / h)
+    List = [y0, u0]
+    for i in range(iterations):
+        y_current, u_current = List[0], List[1]
+        m1 = u_current
+        k1 = SecondOrderDiffEq.subs({x: x0, y: y_current, u: u_current})
+        m2 = u_current + (h * k1/2)
+        k2 = SecondOrderDiffEq.subs({x: x0 + (h / 2), y: y_current + (h * m1 / 2), u: u_current + (h * k1 / 2)})
+        m3 = u_current + (h * k2 / 2)
+        k3 = SecondOrderDiffEq.subs({x: x0 + (h / 2), y: y_current + (h * m2 / 2),u: u_current + (h * k2 / 2)})
+        m4 = u_current + h * k3
+        k4 = SecondOrderDiffEq.subs({x: x0 + h, y: y_current + (h * m3) , u: u_current + (h * k3)})
+        y_new = y_current + (h/6)*(m1 + 2*m2 + 2*m3 + m4)
+        u_new = u_current + (h/6)*(k1 + 2*k2 + 2 * k3 + k4)
+        x0 += h
+        List[0] = y_new
+        List[1] = u_new
+    return List[0], List[1]
+
+x = Symbol("x")
+y = Symbol("y")
+u = Symbol("u")
+SecondOrderDiffEq = - y - x*u  # Represents the given second-order ODE
+x0 = 0
+y0 = 1  # Initial value of y at x0
+u0 = 2  # Initial value of the first derivative of y (u) at x0
+
+h = 0.1  # Step size
+xf = 0.2  # Final value of x for which the solution is computed
+result = EulersSecondOrder(SecondOrderDiffEq, x0, y0, u0, h, xf)
+print(result)

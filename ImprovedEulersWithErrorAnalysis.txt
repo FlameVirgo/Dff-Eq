@@ -1,39 +1,64 @@
+# Improved Euler's Method (Heun's Method) Implementation with Error Analysis & Time Measurement
+# Author: Sachin Letchumanan
+# Date: 03/14/2024
+
+# Importing required libraries
 from sympy import *
 import time
 import math
 
-"""
-Name: Sachin Letchumanan
-Date: 03/14/2024
-Description: Simulate Improved Euler's (Heun's) Method with an Error Analysis & Time
-"""
+# Printing headers for the table
+print("{:<10} {:<10} {:<15} {:<10}".format("x", "y", "Real Value", "Absolute Error"))
 
-print("{:<10} {:<10} {:<15} {:<10}".format("x", "y", "Real Value", "Absolute Error"))         # Headers
+# Defining Improved Euler's method function
 def ImpEulers(diffEq, x0, y0, step, xf, solToDiffEq):
+    # Declaring symbols
     x = Symbol("x")
     y = Symbol("y")
+    
+    # Calculating the number of iterations
     iterations = int((xf - x0) / step)
-    start_time = time.time()                                                                  # Start measuring time
+    
+    # Start measuring time
+    start_time = time.time()
+    
+    # Iterating through the range of iterations
     for i in range(iterations + 1):
-        print("{:<10}".format(round(x0, 4)), end = " ")                                       # indent
-        print("{:<10}".format(round(y0, 4)), end = " ")                                       # indent
-        m = diffEq.subs({x: x0, y: y0})                                                       # use differential equation to find slope at x0 , y0
+        # Printing current values of x and y
+        print("{:<10}".format(round(x0, 4)), end=" ")
+        print("{:<10}".format(round(y0, 4)), end=" ")
+        
+        # Using differential equation to find slope at (x0, y0)
+        m = diffEq.subs({x: x0, y: y0})
+        
+        # Computing the actual value of y
         y_actual = solToDiffEq.subs({x: x0})
+        
+        # Calculating absolute error
         absError = abs(y_actual - y0)
-        y0 += (step/2) * (m + diffEq.subs({x: x0 + (step) , y: y0 + m*step } ) )              # approx the next y using 
-        print("{:<15}".format(round(float(y_actual), 4)) , end = " ")
-        print(round(absError, 4), end = " ")                                                  #indent 
+        
+        # Approximating the next y using Improved Euler's method
+        y0 += (step / 2) * (m + diffEq.subs({x: x0 + step, y: y0 + m * step}))
+        
+        # Printing real value and absolute error
+        print("{:<15}".format(round(float(y_actual), 4)), end=" ")
+        print(round(absError, 4), end=" ")
         print()
+        
+        # Updating x for the next iteration
         x0 += step
-    end_time = time.time()                                                                    # End measuring time
-    return y0, end_time - start_time                                                          # Return result and time taken
+    
+    # End measuring time
+    end_time = time.time()
+    
+    # Return result and time taken
+    return y0, end_time - start_time
 
 # Test Case
-
 x = Symbol("x")
 y = Symbol("y")
 diffEq = 2 * x * y
-solToDiffEq = (math.e)**(x**2 - 1)
+solToDiffEq = (math.e) ** (x ** 2 - 1)
 x0 = 1.0
 y0 = 1.0
 step = 0.05

@@ -1,0 +1,54 @@
+# Importing sympy library for symbolic computation
+from sympy import *
+
+"""
+Name: Sachin Letchumanan
+Date: 04/08/2024
+Description: Euler's Method --> Second Order --> One Function
+"""
+
+# Defining Euler's method for second-order ODE with one function
+def EulersSecondOrder(SecondOrderDiffEq, x0, y0, u0, h, xf):
+    x = Symbol("x")
+    y = Symbol("y")
+    u = Symbol("u")
+    
+    # Calculating the number of iterations
+    iterations = round((xf - x0) / h)
+    
+    # Initialize list with initial values
+    List = [y0, u0]
+    
+    # Main loop for Euler's method
+    for i in range(iterations):
+        y_current, u_current = List[0], List[1]
+        
+        # Calculate new values using Euler's method
+        y_new = y_current + h * u_current
+        SecondOrderDerivative = SecondOrderDiffEq.subs({x: x0, y: y_current, u: u_current})
+        u_new = u_current + h * SecondOrderDerivative
+        
+        # Update x for the next iteration
+        x0 += h
+        
+        # Update list with new values
+        List[0] = y_new
+        List[1] = u_new
+        
+    return List[0], List[1]
+
+# Define symbols and initial conditions
+x = Symbol("x")
+y = Symbol("y")
+u = Symbol("u")
+SecondOrderDiffEq = -y - x * u  # u is y' (first derivative) and "SecondOrderDiffEq" is the second derivative
+x0 = 0
+y0 = 1
+u0 = 2
+
+h = 0.1
+xf = 0.2
+
+# Compute and print result
+result = EulersSecondOrder(SecondOrderDiffEq, x0, y0, u0, h, xf)
+print(result)

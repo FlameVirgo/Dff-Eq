@@ -1,3 +1,5 @@
+# Importing sympy library for symbolic computation
+# and math module for mathematical functions
 from sympy import *
 import math
 
@@ -7,34 +9,53 @@ Date: 03/14/2024
 Description: Euler's Method with an Error Analysis
 """
 
-print("{:<10} {:<10} {:<15} {:<10}".format("x", "y", "Real Value", "Absolute Error"))                # Header
+# Header for the table
+print("{:<10} {:<10} {:<15} {:<10}".format("x", "y", "Real Value", "Absolute Error"))
+
+# Defining Euler's method function with error analysis
 def EulersWithErrorAnalysis(diffEq, x0, y0, step, xf, solToDiffEq):
     x = Symbol("x") 
     y = Symbol("y")
-    iterations = int((xf - x0) / step)                                                               # How long it will take to get from x0 to xf given a step size 
-    for i in range(iterations + 1):                                                                  # the +1 ensures it goes until the very last iteration
-        print("{:<10}".format(round(x0, 4)), end = " ")                                              # indent
-        print("{:<10}".format(round(y0, 4)), end = " ")
-        m = diffEq.subs({x: x0, y: y0})                                                              # indent
-        y_actual = solToDiffEq.subs({x: x0})                                                         # real value of the function at x0  
-        absError = abs(y_actual - y0)                                                                # error between real value and improved euler's approximated value
+    
+    # Calculating the number of iterations
+    iterations = int((xf - x0) / step)
+    
+    # Iterating through the range of iterations
+    for i in range(iterations + 1):
+        # Printing current values of x and y
+        print("{:<10}".format(round(x0, 4)), end=" ")
+        print("{:<10}".format(round(y0, 4)), end=" ")
+        
+        # Calculating slope at (x0, y0)
+        m = diffEq.subs({x: x0, y: y0})
+        
+        # Computing the actual value of y
+        y_actual = solToDiffEq.subs({x: x0})
+        
+        # Calculating absolute error
+        absError = abs(y_actual - y0)
+        
+        # Updating y using Euler's method
         y0 = m * step + y0
-        print("{:<15}".format(round(float(y_actual), 4)) , end = " ")                                # indent
-        print(round(absError, 4), end = " ")                     
+        
+        # Printing real value and absolute error
+        print("{:<15}".format(round(float(y_actual), 4)), end=" ")
+        print(round(absError, 4), end=" ")
         print() 
-        x0 += step                                                                                   # updates x for the next iteration
+        
+        # Updating x for the next iteration
+        x0 += step
+    
     return y0
 
 # Test Case
-
 x = Symbol("x")
 y = Symbol("y")
-diffEq = 2*x*y                        
-solToDiffEq = (math.e)**(x**2 - 1)
+diffEq = 2 * x * y                        
+solToDiffEq = (math.e) ** (x ** 2 - 1)
 x0 = 1.0
 y0 = 1.0
 step = 0.05
 xf = 1.5
-
 
 result = EulersWithErrorAnalysis(diffEq, x0, y0, step, xf, solToDiffEq)
