@@ -1,3 +1,5 @@
+# Importing sympy library for symbolic computation
+# and time module for measuring execution time
 from sympy import *
 import time
 
@@ -7,19 +9,30 @@ Date: 03/12/2024
 Description: Simulate Improved Euler's (Heun's) Method
 """
 
+# Define the Improved Euler's method (Heun's method)
 def ImpEulers(diffEq, x0, y0, step, xf):
     x = Symbol("x")
     y = Symbol("y")
+    
+    # Calculate number of iterations
     iterations = int((xf - x0) / step)
-    start_time = time.time()                                                                  # Start measuring time
+    
+    # Start measuring execution time
+    start_time = time.time()
+    
+    # Main loop for Improved Euler's method
     for i in range(iterations):
         m = diffEq.subs({x: x0, y: y0})                                                       # use differential equation to find slope at x0 , y0
-        y0 += (step/2) * (m + diffEq.subs({x: x0 + (step) , y: y0 + m*step } ) ).evalf()      # approx the next y using 
+        y0 += (step / 2) * (m + diffEq.subs({x: x0 + step, y: y0 + m * step})).evalf()         # approx the next y using 
         x0 += step
-    end_time = time.time()                                                                    # End measuring time
-    return y0, end_time - start_time                                                          # Return result and time taken
+    
+    # End measuring execution time
+    end_time = time.time()
+    
+    # Return result and time taken
+    return y0, end_time - start_time
 
-#Test Case
+# Test Case
 x = Symbol("x")
 y = Symbol("y")
 diffEq = 2 * x * y

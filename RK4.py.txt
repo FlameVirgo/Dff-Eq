@@ -1,3 +1,5 @@
+# Importing sympy library for symbolic computation
+# and time module for measuring execution time
 from sympy import *
 import time
 
@@ -7,19 +9,30 @@ Date: 03/18/2024
 Description: RK4 Simulation
 """
 
+# Define the RK4 method for solving differential equations
 def RK4(diffEq, x0, y0, step, xf):
     x = Symbol("x")
     y = Symbol("y")
-    iterations = int((xf - x0) / step)                                     # indicates how many attempts it will take to get from x0 to xf with a given step size
+    
+    # Calculate number of iterations
+    iterations = int((xf - x0) / step)
+    
+    # Start measuring execution time
     start_time = time.time()
+    
+    # Main loop for RK4 method
     for i in range(iterations):
         k1 = diffEq.subs({x: x0, y: y0})                                   # k1
-        k2 = diffEq.subs({x: x0 + (step / 2) , y: y0 + step * (k1 / 2)})   # k2 
-        k3 = diffEq.subs({x: x0 + (step / 2) , y: y0 + step * (k2 / 2)})   # k3 
-        k4 = diffEq.subs({x: x0 + step, y: y0 + step * (k3)})              # k4
-        y0 += (step/6) * (k1 + 2*k2 + 2*k3 + k4)                           # update y0 
-        x0 += step                                                         # increment x0 by step to go to next iteration
+        k2 = diffEq.subs({x: x0 + (step / 2), y: y0 + step * (k1 / 2)})    # k2 
+        k3 = diffEq.subs({x: x0 + (step / 2), y: y0 + step * (k2 / 2)})    # k3 
+        k4 = diffEq.subs({x: x0 + step, y: y0 + step * k3})                # k4
+        y0 += (step / 6) * (k1 + 2 * k2 + 2 * k3 + k4)                     # update y0 
+        x0 += step                                                        # increment x0 by step for next iteration
+    
+    # End measuring execution time
     end_time = time.time()
+    
+    # Return result and time taken
     return y0, end_time - start_time
 
 # Test Case
